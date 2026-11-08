@@ -3191,3 +3191,77 @@ KVAI_FIX_CSS = r"""
 </style>
 """
 st.markdown(KVAI_FIX_CSS, unsafe_allow_html=True)
+
+# ===== FINAL READABILITY FIX: ផ្ទៃងងឹត + អក្សរសច្បាស់ (ដាក់ចុងក្រោយបំផុត ដើម្បីឈ្នះ CSS ផ្សេង) =====
+st.markdown("""<style>
+html body .stApp [data-testid="stPills"] button,
+html body .stApp [data-testid^="stBaseButton-pills"],
+html body .stApp [data-testid="stRadio"] label{
+  background:#1d2766 !important; background-color:#1d2766 !important;
+  border:1.5px solid #4cc9ff !important; opacity:1 !important; box-shadow:none !important;
+  min-height:38px !important;
+}
+html body .stApp [data-testid="stPills"] button *,
+html body .stApp [data-testid^="stBaseButton-pills"] *,
+html body .stApp [data-testid="stRadio"] label *{
+  color:#ffffff !important; opacity:1 !important; font-size:15px !important; font-weight:700 !important;
+  -webkit-text-fill-color:#ffffff !important;
+}
+html body .stApp [data-testid="stBaseButton-pillsActive"],
+html body .stApp [data-testid="stRadio"] label:has(input:checked){
+  background:linear-gradient(90deg,#ff2bb0,#2bb8ff) !important; border-color:transparent !important;
+}
+html body .stApp [data-testid="stPills"] [role="group"], html body .stApp [data-testid="stPills"] > div{
+  flex-wrap:nowrap !important; overflow-x:auto !important; padding-bottom:6px !important;
+}
+html body .stApp [data-testid="stPills"] button{flex:0 0 auto !important; white-space:nowrap !important;}
+
+/* selectbox / multiselect / input = ផ្ទៃងងឹត អក្សរស */
+html body .stApp [data-baseweb="select"] > div,
+html body .stApp [data-baseweb="select"] input,
+html body .stApp [data-testid="stTextInput"] input{
+  background:#10183f !important; background-color:#10183f !important;
+  color:#ffffff !important; -webkit-text-fill-color:#ffffff !important; border:1.5px solid #4cc9ff !important;
+}
+html body .stApp [data-baseweb="select"] *{color:#ffffff !important; -webkit-text-fill-color:#ffffff !important;}
+html body .stApp [data-baseweb="select"] svg{fill:#ffffff !important;}
+html body .stApp [data-testid="stTextInput"] input::placeholder,
+html body .stApp [data-baseweb="select"] input::placeholder{color:#c3cbff !important; -webkit-text-fill-color:#c3cbff !important; opacity:1 !important;}
+html body [data-baseweb="popover"] ul, html body [data-baseweb="popover"] li, html body [data-baseweb="menu"]{
+  background:#10183f !important; color:#ffffff !important;
+}
+html body [data-baseweb="popover"] li *{color:#ffffff !important;}
+html body [data-baseweb="popover"] li:hover, html body [data-baseweb="popover"] li[aria-selected="true"]{background:#2b3a8f !important;}
+html body .stApp [data-baseweb="tag"]{background:#2b3a8f !important;}
+
+/* label / checkbox / caption = ស */
+html body .stApp [data-testid="stWidgetLabel"] *,
+html body .stApp [data-testid="stCheckbox"] *,
+html body .stApp [data-testid="stCaptionContainer"] *,
+html body .stApp label, html body .stApp label p{
+  color:#f2f4ff !important; opacity:1 !important; -webkit-text-fill-color:#f2f4ff !important;
+}
+html body .stApp [data-testid="stCheckbox"] label > span:first-child{background:#10183f !important; border:2px solid #4cc9ff !important;}
+
+/* ប៊ូតុងទូទៅ + ប៊ូតុង disabled (ZIP) អក្សរត្រូវមើលឃើញ */
+html body .stApp .stButton > button,
+html body .stApp [data-testid^="stBaseButton-secondary"]{
+  background:#142055 !important; border:1.5px solid #4cc9ff !important; opacity:1 !important;
+}
+html body .stApp .stButton > button *, html body .stApp [data-testid^="stBaseButton-secondary"] *{
+  color:#ffffff !important; -webkit-text-fill-color:#ffffff !important; opacity:1 !important; font-weight:700 !important;
+}
+html body .stApp .stButton > button:disabled,
+html body .stApp [data-testid^="stBaseButton-"]:disabled{
+  background:#2a3166 !important; border:1.5px dashed #7f8ad6 !important; opacity:1 !important;
+}
+html body .stApp .stButton > button:disabled *,
+html body .stApp [data-testid^="stBaseButton-"]:disabled *{
+  color:#d7dcff !important; -webkit-text-fill-color:#d7dcff !important; opacity:1 !important;
+}
+html body .stApp .stButton > button[kind="primary"]:not(:disabled),
+html body .stApp .stDownloadButton > button{
+  background:linear-gradient(100deg,#FF279F,#853CFF,#08C8EF) !important; border:0 !important;
+}
+html body .stApp .stDownloadButton > button *{color:#fff !important; -webkit-text-fill-color:#fff !important;}
+</style>""", unsafe_allow_html=True)
