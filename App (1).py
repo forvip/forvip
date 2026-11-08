@@ -2215,7 +2215,7 @@ def _hg_row_tags(row, limit=2):
 
 def _hg_poster_grid(rows, prefix="hg"):
     """ក្រឡា poster បែប hongguoduanju.com: រូបបញ្ឈរ + «全N集» + ឈ្មោះ (ត្រឹម ១ បន្ទាត់) + ស្លាក។
-    ទូរស័ព្ទ ៣ ជួរ · ទំព័រធំ ៦ ជួរ។ ត្រឡប់ row ដែលអ្នកប្រើចុច «▶ មើល» (ឬ None)។"""
+    ទូរស័ព្ទ ៣ ជួរ · ទំព័រធំ ៦ ជួរ។ ត្រឡប់ row ដែលអ្នកប្រើចុច «📦 ZIP» (ឬ None)។"""
     st.markdown(f"""<style>
 .st-key-{prefix}_grid[data-testid="stVerticalBlock"], .st-key-{prefix}_grid > div[data-testid="stVerticalBlock"]{{
   display:grid !important; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px 8px; align-items:start;}}
@@ -2254,7 +2254,7 @@ def _hg_poster_grid(rows, prefix="hg"):
             with st.container(key=f"{prefix}_card_{sid}"):
                 st.markdown(f'<div class="hgc">{img}{badge}</div><div class="hgn" title="{name}">{name}</div>'
                             f'<div class="hgt">{tags}</div>', unsafe_allow_html=True)
-                if st.button("▶ មើល", key=f"{prefix}_select_{sid}", use_container_width=True):
+                if st.button("📦 ZIP", key=f"{prefix}_select_{sid}", use_container_width=True):
                     clicked = r
     return clicked
 
@@ -2305,7 +2305,7 @@ st.markdown(
     '<div style="display:flex;align-items:center;gap:12px;margin:2px 0 10px">'
     '<div style="font-size:34px;line-height:1">🍎</div>'
     '<div><div style="font-size:1.5rem;font-weight:800;line-height:1.2">Hongguo</div>'
-    '<div style="opacity:.75;font-size:.9rem">ស្វែងរករឿង · មើលភាគ · ទាញយក · យកតំណផ្ទាល់ច្រើនភាគ</div></div></div>',
+    '<div style="opacity:.75;font-size:.9rem">ស្វែងរករឿង · ទាញយក ZIP</div></div></div>',
     unsafe_allow_html=True,
 )
 busy = False
@@ -2316,8 +2316,24 @@ with tab_drama:
     if not _hg_access:
         st.link_button("👑 ចង់ប្រើ VIP? ទាក់ទងបើកគណនី — Telegram @Smeytk", "https://t.me/Smeytk", type="primary", use_container_width=True)
     if _hg_access:
-        st.markdown("### 🍎 ស្វែងរករឿង Hongguo")
-        st.caption("ជ្រើសរើសរឿង និងភាគ រួចមើល ឬទាញយកវីដេអូ។")
+        st.markdown("""<style>
+/* ===== អក្សរច្បាស់ + scroll តិច ===== */
+[data-testid="stPills"] button, [data-testid="stBaseButton-pills"], [data-testid="stBaseButton-pillsActive"]{
+  background:#1b2352 !important; color:#ffffff !important; border:1px solid #4cc9ff !important;
+  font-size:14px !important; font-weight:600 !important; opacity:1 !important;}
+[data-testid="stPills"] button p, [data-testid="stBaseButton-pills"] p, [data-testid="stBaseButton-pillsActive"] p{color:#ffffff !important;}
+[data-testid="stBaseButton-pillsActive"]{background:linear-gradient(90deg,#ff2bb0,#2bb8ff) !important; border-color:transparent !important;}
+[data-testid="stPills"] > div, [data-testid="stPills"] [role="group"]{flex-wrap:nowrap !important; overflow-x:auto !important; padding-bottom:4px;}
+[data-testid="stPills"] button{flex:0 0 auto !important; white-space:nowrap !important;}
+[data-testid="stTextInput"] input{color:#ffffff !important; background:#10163a !important; font-size:15px !important;}
+[data-testid="stTextInput"] input::placeholder{color:#b9c2ff !important; opacity:1 !important;}
+label, [data-testid="stWidgetLabel"] p, .stCaption, [data-testid="stCaptionContainer"]{color:#eef1ff !important; opacity:1 !important;}
+[data-baseweb="select"] *{color:#ffffff !important;}
+[data-baseweb="select"] > div{background:#10163a !important;}
+[data-baseweb="tag"]{background:#2b3a8f !important;} [data-baseweb="tag"] *{color:#fff !important;}
+[class*="_grid"] .hgn{font-size:14px !important; color:#ffffff !important; white-space:normal !important;
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; line-height:1.3; min-height:2.6em;}
+</style>""", unsafe_allow_html=True)
         if _is_admin_session():
           with st.expander("🔑 Admin: ដាក់ API Key ជំនួស Secrets (ជម្រើស)", expanded=not _hg_ready()):
             st.caption("ជាធម្មតា Key ដាក់ក្នុង Streamlit Secrets (XIAOYING_APPID / XIAOYING_APPSECRET) ហើយអ្នកប្រើគ្រប់គ្នាប្រើបាន។ "
@@ -2432,40 +2448,22 @@ with tab_drama:
                 st.session_state.pop("_hg_selected", None)
                 st.rerun()
             st.subheader(_hg_km(_hg_selected.get("name") or "រឿង"))
-            _hg_cover = _hg_selected.get("cover")
-            if _hg_cover:
-                _hg_show_cover(_hg_cover)
             try:
                 with st.spinner("កំពុងទាញយកបញ្ជីភាគ..."):
                     _hg_d = _hg_detail(_hg_selected["series_id"])
-                if _hg_d.get("intro"):
-                    st.write(_hg_km(_hg_d["intro"]))
                 _hg_eps = [e for e in (_hg_d.get("episodes") or []) if isinstance(e, dict) and (e.get("playable") or e.get("video_id") or e.get("url"))]
                 if not _hg_eps:
                     st.info("រឿងនេះមិនទាន់មានភាគដែលអាចចាក់បានទេ។")
                 else:
                     _hg_ep_map = {f"ភាគ {int(e.get('ep', i+1))}": int(e.get('ep', i+1)) for i,e in enumerate(_hg_eps)}
-                    _hg_quality = st.selectbox("គុណភាព", [360,480,540,720,1080], index=3, key=f"hg_q_{_hg_selected['series_id']}")
-                    _hg_codec = st.selectbox("Codec", ["h264", "hevc"], key=f"hg_codec_{_hg_selected['series_id']}")
-                    _hg_ep_label = st.selectbox("ជ្រើសរើសភាគសម្រាប់មើល", list(_hg_ep_map), key=f"hg_ep_{_hg_selected['series_id']}")
-                    _hg_epnum = _hg_ep_map[_hg_ep_label]
-                    _hg_play_key = f"_hg_play_{_hg_selected['series_id']}_{_hg_epnum}"
-                    if st.button("▶ រៀបចំភាគនេះ", type="primary", key=f"hg_play_btn_{_hg_selected['series_id']}", use_container_width=True):
-                        with st.spinner("កំពុងរៀបចំវីដេអូ..."):
-                            _hg_play = _hg_get("play", {"series_id": _hg_selected["series_id"], "ep": _hg_epnum, "q": _hg_quality, "codec": _hg_codec})
-                        if _hg_play.get("url"):
-                            st.session_state[_hg_play_key] = {"url": _hg_play["url"], "ready": _hg_play.get("ready"), "source": _hg_play.get("source")}
-                        else:
-                            st.error("API មិនបានផ្ដល់តំណវីដេអូទេ។")
-                    _hg_saved = st.session_state.get(_hg_play_key)
-                    if _hg_saved:
-                        st.video(_hg_saved["url"])
-                        st.link_button("⬇️ បើក / ទាញយកវីដេអូ", _hg_saved["url"], use_container_width=True)
-                        if _hg_saved.get("ready") is False:
-                            st.info("វីដេអូកំពុងរៀបចំលើម៉ាស៊ីនមេ។ សូមរង់ចាំបន្តិច។")
+                    _hg_c1, _hg_c2 = st.columns(2)
+                    with _hg_c1:
+                        _hg_quality = st.selectbox("គុណភាព", [360,480,540,720,1080], index=3, key=f"hg_q_{_hg_selected['series_id']}")
+                    with _hg_c2:
+                        _hg_codec = st.selectbox("Codec", ["h264", "hevc"], key=f"hg_codec_{_hg_selected['series_id']}")
 
                     # Download multiple Hongguo episodes in one ZIP (all or selected)
-                    st.markdown("#### ⬇️ ទាញយកវីដេអូច្រើនភាគ")
+                    st.markdown("#### 📦 ទាញយក ZIP")
                     _hg_dl_all = st.checkbox(
                         f"ជ្រើសរើសភាគទាំងអស់ ({len(_hg_ep_map)} ភាគ)",
                         value=False,
@@ -2553,70 +2551,6 @@ with tab_drama:
                                 use_container_width=True
                             )
 
-                    # ---- Direct links for many episodes (no server download / no ZIP) ----
-                    st.markdown("#### 🔗 យកតំណផ្ទាល់ច្រើនភាគ (លឿន — មិនឆ្លងម៉ាស៊ីនមេ)")
-                    st.caption("បើកតំណក្នុង browser ដើម្បីចាក់ពេញ និងចុច Download ដូចវីដេអូផ្ទាល់។ ឬចម្លងតំណទាំងអស់ទៅ 1DM / ADM ដើម្បីទាញម្ដងច្រើនភាគ។")
-                    _lk_sid = _hg_selected["series_id"]
-                    _lk_all = st.checkbox(f"ជ្រើសរើសភាគទាំងអស់ ({len(_hg_ep_map)} ភាគ)", value=False, key=f"hg_lk_all_{_lk_sid}")
-                    _lk_labels = st.multiselect(
-                        "ឬជ្រើសរើសតែភាគដែលចង់បាន",
-                        list(_hg_ep_map.keys()),
-                        default=list(_hg_ep_map.keys()) if _lk_all else [],
-                        key=f"hg_lk_eps_{_lk_sid}"
-                    )
-                    _lk_chosen = list(_hg_ep_map.keys()) if _lk_all else list(_lk_labels)
-                    if st.button(
-                        f"🔗 យកតំណ {len(_lk_chosen)} ភាគ",
-                        key=f"hg_lk_start_{_lk_sid}",
-                        disabled=(not _lk_chosen or busy),
-                        use_container_width=True
-                    ):
-                        _lk_chosen = _lk_chosen[:100]
-                        _lk_bar = st.progress(0, text="កំពុងយកតំណ...")
-                        _lk_items, _lk_errs = [], []
-
-                        def _lk_one(_lbl):
-                            _n = _hg_ep_map[_lbl]
-                            try:
-                                _r = _hg_get("play", {"series_id": _lk_sid, "ep": _n, "q": _hg_quality, "codec": _hg_codec})
-                                _u = str(_r.get("url") or "").strip()
-                                if not _u:
-                                    return (_n, "", "API មិនបានផ្ដល់តំណវីដេអូ")
-                                return (_n, _u, "")
-                            except Exception as _e:
-                                return (_n, "", str(_e)[:160])
-
-                        _lk_done = 0
-                        with ThreadPoolExecutor(max_workers=4) as _lk_ex:
-                            for _n, _u, _er in _lk_ex.map(_lk_one, _lk_chosen):
-                                _lk_done += 1
-                                if _u:
-                                    _lk_items.append((_n, _u))
-                                else:
-                                    _lk_errs.append(f"ភាគ {_n}: {_er}")
-                                _lk_bar.progress(_lk_done / max(1, len(_lk_chosen)), text=f"យកតំណបាន {len(_lk_items)}/{len(_lk_chosen)}")
-                        _lk_bar.empty()
-                        _lk_items.sort(key=lambda x: x[0])
-                        st.session_state[f"_hg_links_{_lk_sid}"] = {
-                            "items": _lk_items, "errs": _lk_errs,
-                            "name": safe_filename(_hg_selected.get("name") or "hongguo")
-                        }
-                    _lk_saved = st.session_state.get(f"_hg_links_{_lk_sid}")
-                    if _lk_saved:
-                        if _lk_saved["items"]:
-                            st.success(f"បានតំណ {len(_lk_saved['items'])} ភាគ")
-                            _lk_text = "\n".join(u for _, u in _lk_saved["items"])
-                            st.text_area("តំណទាំងអស់ (មួយបន្ទាត់មួយភាគ — ចម្លងទៅ 1DM / ADM)", _lk_text, height=140, key=f"hg_lk_text_{_lk_sid}")
-                            dl_button("📄 ទាញយកបញ្ជីតំណ (.txt)", _lk_text.encode("utf-8"),
-                                      f"{_lk_saved['name']}_links.txt", "text/plain",
-                                      key=f"hg_lk_txt_{_lk_sid}", use_container_width=True)
-                            with st.expander("បើកតំណម្ដងមួយភាគ"):
-                                for _n, _u in _lk_saved["items"]:
-                                    st.link_button(f"⬇️ ភាគ {_n}", _u, use_container_width=True)
-                        if _lk_saved["errs"]:
-                            with st.expander(f"ភាគដែលមានបញ្ហា ({len(_lk_saved['errs'])})"):
-                                for _x in _lk_saved["errs"]:
-                                    st.warning(_x)
 
             except Exception as e:
                 st.error(str(e))
