@@ -2166,21 +2166,37 @@ def _hg_category_tree():
 
 
 def _hg_chips(key, options, default=None):
-    """ប៊ូតុងជ្រើសរើសមួយ (ដូចម៉ឺនុយ 真人剧 / 漫剧 / 全部 / 爱情 ... នៅលើគេហទំព័រ)។"""
+    """ប៊ូតុងជ្រើសរើសមួយ — ប្រើ st.button ធម្មតា (ផ្ទៃងងឹត អក្សរស) រៀបជាជួរតែមួយ អូសចំហៀងបាន។"""
     options = list(options)
     if not options:
         return default
     dflt = default if default in options else options[0]
-    if hasattr(st, "pills"):
-        val = st.pills("ប្រភេទ", options, selection_mode="single", default=dflt, key=key,
-                       label_visibility="collapsed")
-    else:
-        val = st.radio("ប្រភេទ", options, index=options.index(dflt), horizontal=True, key=key,
-                       label_visibility="collapsed")
-    if val not in options:   # អ្នកប្រើចុចលុបជម្រើស → ប្រើតម្លៃចុងក្រោយ
-        val = st.session_state.get(f"_{key}_last", dflt)
-    st.session_state[f"_{key}_last"] = val
-    return val
+    sel_key = f"_{key}_sel"
+    cur = st.session_state.get(sel_key)
+    if cur not in options:
+        cur = dflt
+        st.session_state[sel_key] = cur
+    st.markdown(f"""<style>
+.st-key-{key}[data-testid="stVerticalBlock"], .st-key-{key} > div[data-testid="stVerticalBlock"]{{
+  display:flex !important; flex-direction:row !important; flex-wrap:nowrap !important;
+  overflow-x:auto !important; gap:8px !important; padding:2px 0 8px !important; -webkit-overflow-scrolling:touch;}}
+.st-key-{key} > div, .st-key-{key} [data-testid="stElementContainer"], .st-key-{key} [data-testid="stButton"]{{
+  width:auto !important; flex:0 0 auto !important; min-width:0 !important;}}
+.st-key-{key} button{{white-space:nowrap !important; width:auto !important; padding:6px 16px !important;
+  border-radius:999px !important; background:#1d2766 !important; border:1.5px solid #4cc9ff !important;}}
+.st-key-{key} button *{{color:#ffffff !important; -webkit-text-fill-color:#ffffff !important; font-weight:700 !important; font-size:15px !important;}}
+.st-key-{key} button[kind="primary"]{{background:linear-gradient(90deg,#ff2bb0,#2bb8ff) !important; border-color:transparent !important;}}
+</style>""", unsafe_allow_html=True)
+    clicked = None
+    with st.container(key=key):
+        for i, opt in enumerate(options):
+            if st.button(str(opt), key=f"{key}__btn_{i}", type="primary" if opt == cur else "secondary"):
+                clicked = opt
+    if clicked is not None and clicked != cur:
+        st.session_state[sel_key] = clicked
+        st.rerun()
+    st.session_state[f"_{key}_last"] = cur
+    return cur
 
 
 @st.cache_data(ttl=3600, show_spinner=False, max_entries=600)
